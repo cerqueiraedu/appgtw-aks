@@ -1,7 +1,7 @@
 # Sources: 
 - https://azure.github.io/application-gateway-kubernetes-ingress/setup/install-existing/
 - https://github.com/Azure/aad-pod-identity#deploy-the-azure-aad-identity-infra
-- https://github.com/Azure/application-gateway-kubernetes-ingress/tree/dfce74a2549f91fd911273ecf8abd64249bd63d7
+- https://github.com/Azure/application-gateway-kubernetes-ingress
 
 ## Prerequisite:
 * As listed on Brownfield Deployment: this documents assumes you already have the following tools and infrastructure installed: 
