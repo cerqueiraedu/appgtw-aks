@@ -1,9 +1,9 @@
-Sources: 
+# Sources: 
 - https://azure.github.io/application-gateway-kubernetes-ingress/setup/install-existing/
 - https://github.com/Azure/aad-pod-identity#deploy-the-azure-aad-identity-infra
 - https://github.com/Azure/application-gateway-kubernetes-ingress/tree/dfce74a2549f91fd911273ecf8abd64249bd63d7
 
-Prerequisite:
+## Prerequisite:
 - As listed on Brownfield Deployment: this documents assumes you already have the following tools and infrastructure installed: 
 - Helm installed on your local machine
 - AKS with Advanced Networking enabled
@@ -65,7 +65,7 @@ $ kubectl apply -f aadpodidentity.yaml
 - az ad sp create-for-rbac --subscription {id} --sdk-auth | base64 -w0 - not done yet - not necessary?
 - It is also possible to provide AGIC access to ARM via a Kubernetes secret. - not done yet - not necessary?
 
-- HELM:
+# HELM:
 
 - https://docs.microsoft.com/en-us/azure/aks/kubernetes-helm#create-a-service-account
 
@@ -77,7 +77,7 @@ $ helm repo add application-gateway-kubernetes-ingress https://appgwingress.blob
 $ helm repo update
 ```
 
-- Install AGIC into cluster using helm chart:
+## Install AGIC into cluster using helm chart:
 ```bash
 $ helm install -f agic-helm-config.yaml application-gateway-kubernetes-ingress/ingress-azure --name demoappgtw
 ```
