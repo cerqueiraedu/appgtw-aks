@@ -4,18 +4,19 @@
 - https://github.com/Azure/application-gateway-kubernetes-ingress/tree/dfce74a2549f91fd911273ecf8abd64249bd63d7
 
 ## Prerequisite:
-- As listed on Brownfield Deployment: this documents assumes you already have the following tools and infrastructure installed: 
-- Helm installed on your local machine
-- AKS with Advanced Networking enabled
-- App Gateway v2 in the same virtual network as AKS
-- AAD Pod Identity installed on your AKS cluster
+* As listed on Brownfield Deployment: this documents assumes you already have the following tools and infrastructure installed: 
+* Helm installed on your local machine
+* AKS with Advanced Networking enabled
+* App Gateway v2 in the same virtual network as AKS
+* AAD Pod Identity installed on your AKS cluster
 
-// enable k8s dashboard
+## Steps
+- enable k8s dashboard
 ```bash
 $ kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
 ```
 
-//create basic pfx certificate to create app gateway  
+- create basic pfx certificate to create app gateway  
 
 ```powershell
 New-SelfSignedCertificate `
@@ -28,14 +29,13 @@ Export-PfxCertificate `
   -FilePath c:\appgwcert.pfx `
   -Password $pwd
 ```
-
-// necessary rbac and agents for aad-pod-identity. this is the component that will allow the comunicatation with ARM to setup app gateway rules
+- necessary rbac and agents for aad-pod-identity. this is the component that will allow the comunicatation with ARM to setup app gateway rules
 
 ```bash
 $ kubectl apply -f https://raw.githubusercontent.com/Azure/aad-pod-identity/master/deploy/infra/deployment-rbac.yaml
 ```
   
-// create new managed identity to k8s vms agent pool
+- create new managed identity to k8s vms agent pool
 
 ```
 az identity create -g MC_poc-appgtw-k8s_appgtw-k8s_centralus -n appgtw-identity -o json
@@ -45,17 +45,17 @@ az identity show -g MC_poc-appgtw-k8s_appgtw-k8s_centralus -n appgtw-identity
 -- IMPORTANT: added appgtw-identity to app-gtw resoure group as contributor as well,  but this might not be necessary.
 -- the step below should be enough, but keep it in mind.
 
--- query the get complete app gtw id:
+- query the get complete app gtw id:
 ```
 az network application-gateway list --query [].id
 ```
 
-// assign the managed identity to app gateway as well	
+- assign the managed identity to app gateway as well	
 ```
 az role assignment create --role Contributor --assignee {managed_identity_id} --scope /subscriptions/{id}/resourceGroups/{app_gtw_rg}/providers/Microsoft.Network/applicationGateways/{app_gtw_name}
 ```
    
-// assign AzureIdentity and AzureIdentityBinding   
+- assign AzureIdentity and AzureIdentityBinding   
 ```bash
 $ kubectl apply -f aadpodidentity.yaml
 ```
@@ -82,5 +82,6 @@ $ helm repo update
 $ helm install -f agic-helm-config.yaml application-gateway-kubernetes-ingress/ingress-azure --name demoappgtw
 ```
 
-// you can now deploy guestbook.yaml and ingress-guestbook.yaml as well for testing purposes.
--- if everything was corretly setup, you should be able to see 3 new targets in application gateway backend pool.
+You can now deploy guestbook.yaml and ingress-guestbook.yaml as well for testing purposes.
+
+If everything was corretly setup, you should be able to see 3 new targets in application gateway backend pool.
